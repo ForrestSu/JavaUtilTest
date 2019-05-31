@@ -2,7 +2,9 @@ package org;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
+import lombok.Data;
 
+@Data
 public class ImportFactor extends BaseRowModel {
 
     /**

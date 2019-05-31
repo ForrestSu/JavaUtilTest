@@ -1,16 +1,16 @@
 package org;
 
 
+import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.metadata.Sheet;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,7 +60,8 @@ public class App {
         {
             AnalysisEventListener<List<String>> objectAnalysisEventListener = new AnalysisEventListener<List<String>>() {
                 @Override
-                public void invoke(List<String> list, AnalysisContext analysisContext) {
+                public void invoke(List<String> list, AnalysisContext context) {
+                    System.out.println("当前行：" + context.getCurrentRowNum());
                     System.out.println("size = "+ list.size() +" list == "+ list );
                 }
 
@@ -104,6 +105,18 @@ public class App {
 
         //FileUtils.checksumCRC32()
     }
+    public static void ReadXlsxMode(String excelFile){
+        try (FileInputStream in = new FileInputStream(excelFile))
+        {
+            List<Object> data = EasyExcelFactory.read(in, new Sheet(1, 1, ImportFactor.class));
+
+
+            System.out.println(data.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) {
        // System.out.println("Hello World!");
@@ -111,6 +124,7 @@ public class App {
        // testUUId();
 
         String excelFile = "E:\\FactorInfo_20190331.xlsx";
-       // LoadXlsx(excelFile);
+        LoadXlsx(excelFile);
+       // ReadXlsxMode(excelFile);
     }
 }
