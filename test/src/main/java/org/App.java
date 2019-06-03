@@ -5,17 +5,14 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang.time.DateUtils;
 
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Hello world!
@@ -59,9 +56,14 @@ public class App {
              BufferedInputStream bufferedInputStream = new BufferedInputStream(input))
         {
             AnalysisEventListener<List<String>> objectAnalysisEventListener = new AnalysisEventListener<List<String>>() {
+                private boolean isEof = false;
+                private Map<String, ImportFactor> data = new HashMap<>();
+                private List<String> errInfos = new ArrayList<>();
+
                 @Override
                 public void invoke(List<String> list, AnalysisContext context) {
                     System.out.println("当前行：" + context.getCurrentRowNum());
+
                     System.out.println("size = "+ list.size() +" list == "+ list );
                 }
 
@@ -93,7 +95,7 @@ public class App {
         System.out.println("prefix == <" + prefix+">");
 
         try {
-            Date dt = DateUtils.parseDate("20190532", "yyyyMMdd");
+            Date dt = DateUtils.parseDate("20190532", new String[]{"yyyyMMdd"});
             System.out.println(dt.toLocaleString());
         } catch (ParseException e) {
             e.printStackTrace();
@@ -118,13 +120,39 @@ public class App {
         }
     }
 
+
+
+
+    public static void LoadXlsxAdv(String excelFile) {
+
+        try (FileInputStream input = new FileInputStream(excelFile);
+             BufferedInputStream bufferedInputStream = new BufferedInputStream(input))
+        {
+
+            FactorListener listener = new FactorListener();
+            ExcelReader excelReader = new ExcelReader(bufferedInputStream, null, listener);
+
+            System.out.println("start read...");
+            excelReader.read();
+            System.out.println("excelReader.read()!!");
+            List<ImportFactor> records = listener.GetData();
+            System.out.println(records);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
        // System.out.println("Hello World!");
        // testCommonsIo();
        // testUUId();
 
         String excelFile = "E:\\FactorInfo_20190331.xlsx";
-        LoadXlsx(excelFile);
+       // LoadXlsx(excelFile);
        // ReadXlsxMode(excelFile);
+        LoadXlsxAdv(excelFile);
     }
 }
