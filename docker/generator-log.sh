@@ -1,0 +1,1 @@
+docker logs fms_factor_1 > factor.log

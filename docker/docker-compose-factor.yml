@@ -1,0 +1,21 @@
+version: "3"
+services:
+
+  factor:
+    image: ${factor}
+    ports:
+      - "10009:10009"
+    volumes:
+      - /root/fms/app-data/factor:/factor
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+    networks:
+      - backend
+    deploy:
+      replicas: 1
+    environment:
+      APP_ARGS: "--spring.redis.host=redis --eureka.client.serviceUrl.defaultZone=http://eureka-server:1111/eureka/"
+      JAVA_OPTS: "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=10009 -Duser.timezone=GMT+08"
+
+networks:
+  backend:
+    driver: bridge
