@@ -6,10 +6,13 @@ import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.Sheet;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -38,23 +41,12 @@ public class App {
         return isok;
     }
 
-    public static void testUUId()
-    {
-        //转化为String对象
-        String uuid = UUID.randomUUID().toString();
-        // 打印UUID
-        System.out.println(uuid);
-        uuid = uuid.replace("-", "");
-        //因为UUID本身为32位只是生成时多了“-”，所以将它们去点就可
-        System.out.println(uuid);
-    }
 
 
     public static void LoadXlsx(String excelFile) {
 
         try (FileInputStream input = new FileInputStream(excelFile);
-             BufferedInputStream bufferedInputStream = new BufferedInputStream(input))
-        {
+             BufferedInputStream bufferedInputStream = new BufferedInputStream(input)) {
             AnalysisEventListener<List<String>> objectAnalysisEventListener = new AnalysisEventListener<List<String>>() {
                 private boolean isEof = false;
                 private Map<String, ImportFactor> data = new HashMap<>();
@@ -64,7 +56,7 @@ public class App {
                 public void invoke(List<String> list, AnalysisContext context) {
                     System.out.println("当前行：" + context.getCurrentRowNum());
 
-                    System.out.println("size = "+ list.size() +" list == "+ list );
+                    System.out.println("size = " + list.size() + " list == " + list);
                 }
 
                 @Override
@@ -85,14 +77,14 @@ public class App {
         }
     }
 
-    public static void testCommonsIo(){
+    public static void testCommonsIo() {
 
         String file_name = "test.txt";
         file_name.trim();
 
         String prefix = FilenameUtils.getBaseName(file_name);
 
-        System.out.println("prefix == <" + prefix+">");
+        System.out.println("prefix == <" + prefix + ">");
 
         try {
             Date dt = DateUtils.parseDate("20190532", new String[]{"yyyyMMdd"});
@@ -103,17 +95,15 @@ public class App {
     }
 
 
-    public static void testMd5(){
+    public static void testMd5() {
 
         //FileUtils.checksumCRC32()
     }
-    public static void ReadXlsxMode(String excelFile){
-        try (FileInputStream in = new FileInputStream(excelFile))
-        {
-            List<Object> data = EasyExcelFactory.read(in, new Sheet(1, 1, ImportFactor.class));
 
-
-            System.out.println(data.toString());
+    public static void ReadXlsxMode(String excelFile) {
+        try (FileInputStream in = new FileInputStream(excelFile)) {
+            // List<Object> data = EasyExcelFactory.read(in, new Sheet(1, 1, ImportFactor.class));
+            // System.out.println(data.toString());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,13 +111,10 @@ public class App {
     }
 
 
-
-
     public static void LoadXlsxAdv(String excelFile) {
 
         try (FileInputStream input = new FileInputStream(excelFile);
-             BufferedInputStream bufferedInputStream = new BufferedInputStream(input))
-        {
+             BufferedInputStream bufferedInputStream = new BufferedInputStream(input)) {
 
             FactorListener listener = new FactorListener();
             ExcelReader excelReader = new ExcelReader(bufferedInputStream, null, listener);
@@ -145,14 +132,101 @@ public class App {
         }
     }
 
-    public static void main(String[] args) {
-       // System.out.println("Hello World!");
-       // testCommonsIo();
-       // testUUId();
+    public static void TestListFile() {
+        File localDir = new File("E:\\test");
+        Collection<File> lists = FileUtils.listFiles(localDir, new String[]{"m", "p", "docx"}, true);
 
-        String excelFile = "E:\\FactorInfo_20190331.xlsx";
-       // LoadXlsx(excelFile);
-       // ReadXlsxMode(excelFile);
-        LoadXlsxAdv(excelFile);
+        if (lists == null) {
+            System.out.println("is null");
+        } else {
+            System.out.println(lists.size());
+            lists.stream().forEach(f -> System.out.println("==> " + f.getName()));
+        }
+    }
+
+    public static void testRemoveHashMap() {
+
+        final Map<String, String> mymap = new HashMap<String, String>();
+        mymap.put("sunquan", "1234");
+        mymap.put("lisi", "1234");
+        mymap.put("aaa", "1234");
+        mymap.put("bbb", "1234");
+        mymap.put("ccc", "1234");
+        System.out.println(mymap);
+
+        Set<String> key_set = mymap.keySet();
+        key_set.clear();
+
+        System.out.println("key_set " + key_set);
+        System.out.println("mymap == " + mymap);
+    }
+
+    public static void testObject(int initial) {
+
+        Boolean validity = null;
+        if (validity == null) {
+            validity = true;
+        }
+        boolean val = validity;
+        System.out.println("val  == " + val);
+
+        System.out.println("===");
+    }
+    public static void  testMkdirs(){
+
+        String tmpPath = "E:\\factor1\\factor1\\sunquan";
+        if (!tmpPath.endsWith(File.separator)) {
+            tmpPath = tmpPath + File.separator;
+        }
+        File tmpdir = new File(tmpPath);
+        if (!tmpdir.exists()) {
+           boolean  result =  tmpdir.mkdirs();
+
+           System.out.println("result == " + result);
+        }
+
+    }
+
+    public static void testUUId() {
+        //转化为String对象
+        String uuid = UUID.randomUUID().toString();
+        // 打印UUID
+        System.out.println(uuid);
+        uuid = uuid.replace("-", "");
+        //因为UUID本身为32位只是生成时多了“-”，所以将它们去点就可
+        System.out.println(uuid);
+    }
+
+    public static void testZip(){
+
+        String file = "E:\\factor1\\测试.zip";
+        String tmpWorkDir  = "E:\\factor1\\";
+        File zipfile = new File(file);
+        try {
+            ZipUtil.unpack(zipfile, new File(tmpWorkDir), Charset.forName("GBK"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("unzip oK!");
+    }
+
+    public static void main(String[] args) {
+        // System.out.println("Hello World!");
+        // testCommonsIo();
+        // testUUId();
+
+        // String excelFile = "E:\\FactorInfo_20190331.xlsx";
+        // LoadXlsx(excelFile);
+        // ReadXlsxMode(excelFile);
+        // LoadXlsxAdv(excelFile);
+       //testRemoveHashMap();
+
+        //ImportFactor obj = new ImportFactor(10);
+        //testMkdirs();
+
+        // testUUId();
+        // testUUId();
+        testZip();
+
     }
 }

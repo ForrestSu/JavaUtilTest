@@ -4,6 +4,8 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.util.StringUtils;
 import lombok.*;
 
+import java.util.List;
+
 @Setter
 @Getter
 @ToString
@@ -48,6 +50,8 @@ public class ImportFactor {
      * 因子依赖信息
      */
     private  String depends;
+
+    private List<String> dependsList;
 
     public ImportFactor(Integer index){
         rowIndex = index;
