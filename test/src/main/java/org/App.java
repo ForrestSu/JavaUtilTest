@@ -16,6 +16,8 @@ import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Hello world!
@@ -197,7 +199,7 @@ public class App {
         System.out.println(uuid);
     }
 
-    public static void testZip(){
+    public static void testUnZip(){
 
         String file = "E:\\factor1\\测试.zip";
         String tmpWorkDir  = "E:\\factor1\\";
@@ -208,6 +210,44 @@ public class App {
             e.printStackTrace();
         }
         System.out.println("unzip oK!");
+    }
+
+    private static Pattern FILE_NAME_PATTERN = Pattern.compile("^[0-9a-zA-Z][0-9a-zA-Z_]*$");
+    public static boolean isValidFactorId(String str) {
+        Matcher m = FILE_NAME_PATTERN.matcher(str);
+        if (m.find()) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void testRegex(){
+        String filename = "AA";
+        boolean match = isValidFactorId(filename);
+        System.out.println("match == " + match);
+    }
+
+    public static void MapShowing(Map<Integer, String> mymap) {
+        mymap.put(300, "wangwu");
+        mymap.put(100, "sunquan");
+        mymap.put(200, "lisi");
+        mymap.put(200, "lisi");
+        mymap.put(90001235, "wangwu");
+        mymap.put(90001234, "wangwu");
+        System.out.println("打印Map size() " + mymap.size());
+        for(Map.Entry<Integer, String> one: mymap.entrySet()){
+            System.out.println("==>" + one.getKey() +":" +  one.getValue());
+        }
+    }
+
+    public static void CallShowMap() {
+        System.out.println("打印 HashMap");
+        Map<Integer, String> hashmap = new HashMap<>();
+        MapShowing(hashmap);
+
+        System.out.println("打印 TreeMap");
+        Map<Integer, String> treemap = new TreeMap<>();
+        MapShowing(treemap);
     }
 
     public static void main(String[] args) {
@@ -224,9 +264,8 @@ public class App {
         //ImportFactor obj = new ImportFactor(10);
         //testMkdirs();
 
-        // testUUId();
-        // testUUId();
-        testZip();
-
+        // testUnZip();
+        // testRegex();
+        CallShowMap();
     }
 }
